@@ -25,7 +25,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel" >取 消</el-button>
         <el-button type="primary" @click="add" >添 加</el-button>
-        <el-button type="primary">修 改</el-button>
+        <el-button type="primary" @click="update">修 改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -41,7 +41,7 @@ export default {
        return {
            user:{
                specsname:"",
-               attrs:"",
+               attrs:"[]",
                status:1
            },
            attrsArr:[
@@ -62,7 +62,8 @@ export default {
            reqTotal:"specs/reqTotal",
        }),
        cancel(){
-        //    this.info.isshow=false
+           this.info.isshow=false;
+           
        },
        addAttr(){
            this.attrsArr.push({value:""})
@@ -73,7 +74,7 @@ export default {
        empty(){
            this.user={
                 specsname:"",
-               attrs:"",
+               attrs:"[]",
                status:1
            },
            this.attrsArr=[
@@ -82,17 +83,39 @@ export default {
        },
        add(){
            this.user.attrs=JSON.stringify(this.attrsArr.map(item=>item.value))
-         reqSpescAdd(this.user).then(res=>{
+         reqSpecsAdd(this.user).then(res=>{
              if (res.data.code==200) {
-                 this.cancel();
+                this.cancel()
                  this.empty();
                  successalert(res.data.msg);
                  this.reqList()
                  this.reqTotal()
              }
          })
+       },
+       getOne(id){
+         reqSpecsDetail({id:id}).then(res=>{
+           if (res.data.code==200) {
+             this.user=res.data.list[0]
+             this.user.attrs=JSON.parse(this.user.attrs);
+             this.attrsArr=this.user.attrs.map(item=>({value:item}))
+             
+           }
+         })
+       },
+       update(){
+         this.user.attrs=JSON.stringify(this.attrsArr.map(item=>item.value))
+         reqSpecsUpdate(this.user).then(res=>{
+           if (res.data.code==200) {
+             successalert(res.data.msg);
+              this.cancel();
+              this.empty();
+              this.reqList()
+           }
+         })
        }
-   }
+   },
+   mounted(){}
 }
 </script>
 

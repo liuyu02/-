@@ -33,13 +33,21 @@ let getters={
 }
 let actions={
     reqList(context,bool){
+        
           let params=bool?{}:{page:context.state.page,size:context.state.size}
+          console.log(params);
          reqSpecsList(params).then(res=>{
-            if(res.data.code){
-                if(res.data.list.length===0&&context.state.page>1)
-                context.dispatch('reqList')
-                return;
+            if(res.data.code == 200){
+                console.log(res.data.list.length);
+                console.log(context.state.page)
+                if(res.data.list.length===0&&context.state.page>1){
+                    context.commit("changePage",context.state.page-1)
+                    context.dispatch("reqList")
+                    return;
+                }
+               
             }
+        // 转换数组
             let list=res.data.list
             list.forEach(item=>{
                 item.attrs=JSON.parse(item.attrs)

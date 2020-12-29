@@ -27,7 +27,14 @@ function dataToFormData(user){
     }
     return data
 }
-
+// -------------------------------- 登录---------------------------------------------------
+export let reqLogin =(user)=>{
+    return axios({
+        url:baseUrl+"//api/userlogin/",
+        method:"post",
+        data:qs.stringify(user)
+    })
+}
 // -------------------------------- 菜单管理---------------------------------------------------
 export const reqMenuAdd = (user) => {
     return axios({
@@ -293,7 +300,7 @@ export let reqSpecsAdd =(user)=>{
 // 分页
 export let reqSpecsList=(p)=>{
     return axios({
-        url:baseUrl+"/api/specsadd",
+        url:baseUrl+"/api/specslist",
         method:"get",
         params:p
     })
@@ -336,16 +343,61 @@ export let reqSpecsCount =()=>{
 
 
 
-
-
-
-
-
 // -------------------------------- 商品管理---------------------------------------------------
+// 添加
+export let reqGoodsAdd=(user)=>{
+    return axios({
+        url:baseUrl+"/api/goodsadd",
+        method:"post",
+        data:dataToFormData(user)
+    })
+}
+// 列表获取
 
+export let reqGoodsList=(p)=>{
+    return axios({
+        url:baseUrl+"/api/goodslist",
+        method:"get",
+        params:p
 
+    })
+}
+// 编辑时获取
+export let reqGoodsDetail=(user)=>{
+    return axios({
+        url:baseUrl+"/api/goodsinfo",
+        method:"get",
+        params:user
 
+    })
+}
+// 修改
+export let reqGoodsUpdate=(user)=>{
+    return axios({
+        url:baseUrl+"/api/goodsedit",
+        method:"post",
+        data:dataToFormData(user)
 
+    })
+}
+// 删除
+export let reqGoodsDel=(user)=>{
+    return axios({
+        url:baseUrl+"/api/goodsdelete",
+        method:"post",
+        params:qs.stringify(user)
+
+    })
+}
+
+// 总页
+export let reqGoodsCount=()=>{
+    return axios({
+        url:baseUrl+"/api/specscount",
+        method:"get",
+    })
+    
+}
 
 
 

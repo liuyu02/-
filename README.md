@@ -1,21 +1,31 @@
 # u_shops
 
-> A Vue.js project
+>菜单管理
+OK
 
-## Build Setup
+角色管理
+OK
 
-``` bash
-# install dependencies
-npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
+管理员管理
+OK
 
-# build for production with minification
-npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
+商品分类
+OK
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+商品规格
+OK
+
+商品管理
+
+删除 编辑 未做
+
+会员管理
+OK
+
+轮播图管理
+OK
+
+秒杀活动
+未做
