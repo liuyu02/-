@@ -1,19 +1,29 @@
 <template>
   <div class="form">
     
-    <el-dialog title="添加" :visible.sync="info.isshow" >
+    <el-dialog title="添加" :visible.sync="info.isshow" @opened="opened" >
       <el-form :model="user">
         <el-form-item label="一级分类" label-width="100px">
-          <el-select v-model="user.first_cateid">
-            <el-option value="" label="--请选择--" disabled></el-option>
-            <el-option :value="0" label="顶级分类"></el-option>
+          <el-select v-model="user.first_cateid" @change="changeFirstCateId">
+            <el-option value label="--请选择--" disabled></el-option>
+            <el-option 
+            v-for="item in cateList"
+            :key="item.id"
+            :label="item.catename"
+            :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
 
      <el-form-item label="二级分类" label-width="100px">
           <el-select v-model="user.second_cateid">
             <el-option value="" label="--请选择--" disabled></el-option>
-            <el-option :value="0" label="顶级分类"></el-option>
+            <el-option 
+            v-for="item in secondCateList"
+            :key="item.id"
+            :label="item.catename"
+            :value="item.id"  
+            ></el-option>
           </el-select>
         </el-form-item>
 
@@ -28,7 +38,7 @@
         </el-form-item>
 
         
-        <el-form-item label="图片" label-width="100px" v-if="user.pid!==0">
+        <el-form-item label="图片" label-width="100px" >
           <el-upload
             class="avatar-uploader"
             action="#"
@@ -41,16 +51,26 @@
         </el-form-item>
 
   <el-form-item label="商品规格" label-width="100px">
-          <el-select v-model="user.specsid">
-            <el-option value="" label="--请选择--" disabled></el-option>
-            <el-option :value="0" label="顶级分类"></el-option>
+          <el-select v-model="user.specsid" @change="changeSpecsId">
+            <el-option value label="--请选择--" disabled></el-option>
+            <el-option
+            v-for="item in specsList"
+            :key="item.id"
+            :label="item.specsname"
+            :value="item.id"
+             ></el-option>
           </el-select>
         </el-form-item>
 
           <el-form-item label="商品属性" label-width="100px">
-          <el-select v-model="user.specsattr">
-            <el-option value="" label="--请选择--" disabled></el-option>
-            <el-option :value="0" label="顶级分类"></el-option>
+          <el-select v-model="user.specsattr" multiple>
+            <el-option value label="--请选择--" disabled></el-option>
+            <el-option 
+            v-for="item in showSpecsAttr"
+            :key="item"
+            :label="item"
+            :value="item"
+            ></el-option>
           </el-select>
         </el-form-item>
 
@@ -69,26 +89,110 @@
         <el-form-item label="状态" label-width="100px">
           <el-switch v-model="user.status" :active-value="1" :inactive-value="2"></el-switch>
         </el-form-item>
-      </el-form>
+ <el-form-item label="商品描述" label-width="100px">
+          <div id="editor" v-if="info.isshow"></div>
+        </el-form-item>
 
+      </el-form>
+{{user}}
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary">添 加</el-button>
-        <el-button type="primary" >修 改</el-button>
+        <el-button type="primary" @click="add">添 加</el-button>
+        <el-button type="primary"  @click="update">修 改</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import A from "wangeditor"
+import { reqGoodsAdd,reqGoodsList,reqGoodsDetail, reqCateList,reqGoodsUpdate} from "../../../utils/http"
+import {mapActions ,mapGetters } from  "vuex"
+import {successalert} from "../../../utils/alert.js"
+
 export default {
  props:["info"],
  data(){
      return {
+       imgUrl:"",
          user:{
              first_cateid:"",
              second_cateid:"",
-             goosname:"",
+             goodsname:"",
+             price:"",
+             market_price:"",
+             img:null,
+             description:"",
+             specsid:"",
+             specsattr: [],
+             isnew:1,
+             ishot:1,
+             status:1
+         },
+
+      secondCateList:[],
+      showSpecsAttr:[]   
+     }
+ },
+ computed:{
+   ...mapGetters({
+     cateList:"cate/list",
+     specsList:"specs/list",
+     
+   }),
+   
+ },
+ methods:{
+   ...mapActions({
+     reqCateList:"cate/reqList",
+     reqSpecsList:"specs/reqList",
+     reqList:"goods/reqList",
+     reqTOtal:"goods/reqTOtal"
+
+   }),
+   changeFirstCateId(){
+     this.user.second_cateid="";
+     this.getSecondList();
+   },
+   getSecondList(){
+     reqCateList({pid:this.user.first_cateid}).then(res=>{
+       if(res.data.code==200){
+         this.secondCateList=res.data.list;
+       }
+     })
+     },
+     changeSpecsId(){
+       this.user.specsattr=[];
+       this.getShowSpecsAttr();
+     },
+     getShowSpecsAttr() {
+     
+      let obj = this.specsList.find(item => item.id == this.user.specsid); 
+      this.showSpecsAttr = obj ? obj.attrs : [];
+    },
+     add(){
+     this.user.description=this.editor.txt.html();
+     console.log(this.user)
+     let data={
+       ...this.user,
+       specsattr: JSON.stringify(this.user.specsattr)
+     };
+     reqGoodsAdd(data).then(res=>{
+      if(res.data.code==200){
+        successalert(res.data.msg)
+        this.cancel()
+        this.empty()
+        this.reqList();
+        this.reqTOtal();
+      }
+     })
+   },
+   empty(){
+      this.imgUrl=""
+  this.user={
+             first_cateid:"",
+             second_cateid:"",
+             goodsname:"",
              price:"",
              market_price:"",
              img:null,
@@ -98,20 +202,66 @@ export default {
              isnew:1,
              ishot:1,
              status:1
-         }
-     }
- },
- methods:{
+}
+   },
      cancel(){
          this.info.isshow=false
      },
      changeImg(e){
-      let file=e.target.files[0];
+      let file=e.raw;
       this.imgUrl=URL.createObjectURL(file);
       this.user.img=file;
+     },
+     opened(){
+       this.editor=new A("#editor")
+       this.editor.create();
+       this.editor.txt.html(this.user.description)
+     },
+     getOne(id){
+       reqGoodsDetail({id:id}).then(res=>{
+             if(res.data.code==200){
+               this.user=res.data.list;
+               this.getSecondList();
+               this.imgUrl=this.$pre+this.user.img;
+               this.getShowSpecsAttr();
+               this.user.specsattr=JSON.parse(this.user.specsattr);
+               this.user.id=id;
+               if(this.editor){
+                 this.editor.txt.html(this.user.description)
+               }
+             }
+       })
+     },
+
+     update(){
+       this.user.description=this.editor.txt.html()
+       let data={
+         ...this.user,
+         specsattr: JSON.stringify(this.user.specsattr)
+       };
+       reqGoodsUpdate(data).then(res=>{
+     if(res.data.code==200){
+       this.cancel();
+       this.empty();
+       successalert(res.data.msg);
+       this.reqList();
      }
+       })
+     }
+   },
+   
+   
+     mounted(){
+   if(this.cateList.length==0){
+     
+     this.reqCateList();
+   }
+   
+   this.reqSpecsList(true);
  }
-}
+ }
+ 
+
 </script>
 
 <style scoped lang="stylus">

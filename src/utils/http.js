@@ -385,7 +385,7 @@ export let reqGoodsDel=(user)=>{
     return axios({
         url:baseUrl+"/api/goodsdelete",
         method:"post",
-        params:qs.stringify(user)
+        data:qs.stringify(user)
 
     })
 }

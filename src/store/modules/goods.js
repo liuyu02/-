@@ -1,4 +1,4 @@
-import {reqGoodsList,reqGoodsCount} from "../../src/utils/http.js"
+import {reqGoodsList,reqGoodsCount} from "../../utils/http"
 
 let state={
     list:[],
@@ -35,12 +35,15 @@ let actions={
         let params=bool?{}:{page:context.state.page,size:context.state.size} 
      reqGoodsList(params).then(res=>{
              if(res.data.code==200){
+                 if(res.data.list == null){
+                     res.data.list = []
+                 }
                  if(res.data.list.length===0&&context.state.page>1){
                      context.commit("changePage",context.state.page-1)
                      context.dispatch("reqList")
                      return;
                  }
-
+  context.commit("changeList",res.data.list)
              }
      })
         

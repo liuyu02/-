@@ -1,4 +1,4 @@
-import{reqSpecsList,reqSpecsCount} from "../../src/utils/http";
+import{reqSpecsList,reqSpecsCount} from "../../utils/http";
 
 let state={
     list:[],
