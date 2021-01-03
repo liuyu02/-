@@ -94,7 +94,7 @@
         </el-form-item>
 
       </el-form>
-{{user}}
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="add">添 加</el-button>
@@ -108,7 +108,7 @@
 import A from "wangeditor"
 import { reqGoodsAdd,reqGoodsList,reqGoodsDetail, reqCateList,reqGoodsUpdate} from "../../../utils/http"
 import {mapActions ,mapGetters } from  "vuex"
-import {successalert} from "../../../utils/alert.js"
+import {successalert,lossalert} from "../../../utils/alert.js"
 
 export default {
  props:["info"],
@@ -129,7 +129,6 @@ export default {
              ishot:1,
              status:1
          },
-
       secondCateList:[],
       showSpecsAttr:[]   
      }
@@ -171,8 +170,8 @@ export default {
       this.showSpecsAttr = obj ? obj.attrs : [];
     },
      add(){
-     this.user.description=this.editor.txt.html();
-     console.log(this.user)
+       this.checkProps().then(res=>{
+         this.user.description=this.editor.txt.html();
      let data={
        ...this.user,
        specsattr: JSON.stringify(this.user.specsattr)
@@ -186,9 +185,12 @@ export default {
         this.reqTOtal();
       }
      })
+       })
    },
    empty(){
-      this.imgUrl=""
+  this.imgUrl="";
+  this.secondCateList = [];
+   this.showSpecsAttr = [];
   this.user={
              first_cateid:"",
              second_cateid:"",
@@ -247,7 +249,53 @@ export default {
        this.reqList();
      }
        })
-     }
+     },
+     checkProps() {
+      return new Promise((resolve, reject) => {
+        if (this.user.first_cateid === "") {
+          lossalert("一级分类不能为空");
+          return;
+        }
+
+        if (this.user.second_cateid === "") {
+          lossalert("二级分类不能为空");
+          return;
+        }
+        if (this.user.goodsname === "") {
+         lossalert("商品名称不能为空");
+          return;
+        }
+
+        if (this.user.price === "") {
+          lossalert("商品价格不能为空");
+          return;
+        }
+
+        if (this.user.market_price === "") {
+          lossalert("商品市场价格不能为空");
+          return;
+        }
+
+        if (!this.user.img) {
+          lossalert("请上传图片");
+          return;
+        }
+        if (this.user.specsid === "") {
+          lossalert("商品规格不能为空");
+          return;
+        }
+
+        if (this.user.specsattr.length === 0) {
+          lossalert("请选择规格属性");
+          return;
+        }
+        if (this.editor.txt.html() == "") {
+          lossalert("请输入商品描述");
+          return;
+        }
+        resolve();
+      });
+    },
    },
    
    

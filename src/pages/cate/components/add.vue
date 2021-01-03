@@ -81,7 +81,8 @@ data() {
           }
       },
       add(){
-          reqCateAdd(this.user).then(res=>{
+        this.checkProps().then(res=>{
+  reqCateAdd(this.user).then(res=>{
             console.log(res);
               if(res.data.code==200){
                   successalert(res.data.msg);
@@ -90,6 +91,8 @@ data() {
                   this.$emit("init");
               }
           })
+        })
+        
       },
       getOne(id){
           reqCateDetail({id:id}).then(res=>{
@@ -109,6 +112,23 @@ data() {
                   this.$emit("init");
               }
           })
+      },
+      checkProps(){
+        return new Promise((resolve,reject)=>{
+          if(this.user.pid===""){
+            lossalert("请选择商品");
+            return;
+          }
+          if(this.user.catename===""){
+            lossalert("名称不能为空");
+            return;
+          }
+          if(!this.user.img){
+            lossalert("请上传图片");
+            return;
+          }
+          resolve();
+        })
       }
       
   }

@@ -1,6 +1,5 @@
 export let state={
-    userinfo:sessionStorage.getItem("userInfo")?
-    JSON.parse(sessionStorage.getItem("userInfo")):{}
+    userInfo:sessionStorage.getItem("userInfo")?JSON.parse(sessionStorage.getItem("userInfo")):{}
 }
 export let getters={
     userInfo(state){
@@ -8,12 +7,14 @@ export let getters={
     }
 }
 export let mutations={
-    changeUserInfo(state,obj){
+    changeUserInfo(state,obj){ 
         state.userInfo=obj;
+        //同步到本地存储
         if(obj.username){
-            sessionStorage.setItem("userInfo",Json.stringify(obj))
+            sessionStorage.setItem("userInfo",JSON.stringify(obj))
         }else{
             sessionStorage.removeItem("userInfo")
         }
+        
     }
 }

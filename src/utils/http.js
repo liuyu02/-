@@ -1,6 +1,9 @@
 import axios from "axios"
 import qs from "qs"
 import Vue from "vue"
+import { erroralert, lossalert } from "./alert"
+import store from "../store"
+import router from "../router"
 
 // 开发环境
 let baseUrl = "/api"
@@ -19,6 +22,49 @@ axios.interceptors.response.use(res => {
     }
     return res
 })
+
+// 请求头
+axios.interceptors.request.use(config=>{
+    if(config.url!==baseUrl+"/api/userlogin"){
+        config.headers.authorization=store.state.userInfo.token
+    }
+    return config
+})
+
+axios.interceptors.response.use(res => {
+
+    // 登录失败
+    if (res.data.code !== 200) {
+        lossalert(res.data.msg)
+    }
+    if (!res.data.list) {
+        res.data.list = []
+    }
+    if(res.data.msg==="登录已过期或访问权限受限"){
+        //清除用户登录的信息 userInfo
+        store.dispatch("changeUser",{})
+        router.push("/login")
+    }
+    return res
+})
+
+// 登录到期
+axios.interceptors.response.use(res=>{
+    if(!res.data.code!==200){
+        lossalert(res.data.msg)
+    }
+    if(!res.data.list){
+        res.data.list=[]
+    }
+    if(res.data.msg==="登录已过期或访问权限受限"){
+        store.dispatch("changeUser",{})
+        router.push("/login")
+    }
+    return res
+})
+
+
+
 // -------------------------------- 上传图片文件---------------------------------------------------
 function dataToFormData(user){
     let data=new FormData()
@@ -391,10 +437,11 @@ export let reqGoodsDel=(user)=>{
 }
 
 // 总页
-export let reqGoodsCount=()=>{
+export let reqGoodsCount=(p)=>{
     return axios({
         url:baseUrl+"/api/specscount",
         method:"get",
+        params:p
     })
     
 }
@@ -402,3 +449,42 @@ export let reqGoodsCount=()=>{
 
 
 // -------------------------------- 秒杀活动---------------------------------------------------
+// 添加
+export let reqSeckillAdd=(user)=>{
+    return axios({
+        url:baseUrl+"/api/seckadd",
+        method:"post",
+        data:qs.stringify(user)
+    })
+}
+// 列表
+export let reqSeckillList=()=>{
+    return axios({
+        url:baseUrl+"/api/secklist",
+    })
+}
+// 详情
+export let reqSeckillDetail=(user)=>{
+    return axios({
+        url:baseUrl+"/api/seckinfo",
+        method:"get",
+        params:user
+
+    })
+}
+// 修改
+export let reqSeckillUpdate=(user)=>{
+    return axios({
+        url:baseUrl+"/api/seckedit",
+        method:"post",
+        data:qs.stringify(user)
+    })
+}
+// 删除
+export let reqSeckillDel=(id)=>{
+    return axios({
+        url:baseUrl+"/api/seckdelete",
+        method:"post",
+        data:id
+    })
+}

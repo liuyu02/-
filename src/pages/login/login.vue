@@ -2,7 +2,7 @@
   <div class="login">
    <div class="con">
        <h3>登录</h3>
-       <div class="int"><el-input v-model="user.name" :rules="rules" placeholder="请输入账号" clearable></el-input></div>
+       <div class="int"><el-input v-model="user.username" :rules="rules" placeholder="请输入账号" clearable></el-input></div>
        <div class="int"> <el-input v-model="user.password" placeholder="请输入密码" clearable show-password></el-input></div>
        <div class="center"><el-button type="primary" @click="login">登录</el-button></div>
    </div>
@@ -17,7 +17,7 @@ export default {
  data(){
     return {
       user:{
-        name:"",
+        username:"",
         password:""
       },
       rules:{

@@ -5,10 +5,11 @@
         <el-form-item label="菜单名称" label-width="100px">
           <el-input v-model="user.title" autocomplete="off"></el-input>
         </el-form-item>
+        {{list}}
         <el-form-item label="上级菜单" label-width="100px">
           <el-select v-model="user.pid"  @change="changepid">
             <el-option :value="0" label="顶级菜单"></el-option>
-            <el-option v-for="item in list" :key="item.id" :value="item.title" labal="item.title"></el-option>
+            <el-option v-for="item in list" :key="item.id" :value="item.id" :label="item.title"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="菜单类型" label-width="100px">
@@ -87,8 +88,8 @@ methods:{
     }
 },
 add(){
- 
-   reqMenuAdd(this.user).then(res=>{
+   this.checkProps().then(res=>{
+     reqMenuAdd(this.user).then(res=>{
      if(res.data.code==200){
          console.log("成功",res)
          successalert(res.data.msg);
@@ -97,6 +98,9 @@ add(){
          this.$emit("init")
      }
    })
+   })
+
+   
 
 },
 changepid(){
@@ -123,8 +127,25 @@ update(){
       this.$emit("init")
     }
   })
-}
+},
+checkProps(){
+  return new Promise((resolve,rehect)=>{
+    if(this.user.title ===""){
+      lossalert("名称不能为空");
+      return;
+    }
 
+    if(this.user.icon ===""){
+      lossalert("图标不能为空");
+      return;
+    }
+    if(this.user.url===""){
+      lossalert("地址不能为空");
+      return;
+    }
+    resolve();
+  })
+},
 
 
 }

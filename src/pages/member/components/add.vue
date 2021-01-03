@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { successalert } from '../../../utils/alert.js'
+import { lossalert, successalert } from '../../../utils/alert.js'
 import { reqMemberDetail, reqMemberEdit,reqMemberInfo} from "../../../utils/http.js"
 export default {
  props:["info"],
@@ -73,7 +73,7 @@ methods:{
       this.$emit("init")
     }
   })
-}
+},
 },
 
 }

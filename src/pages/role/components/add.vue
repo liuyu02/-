@@ -11,8 +11,7 @@
   show-checkbox
   ref="tree"
   node-key="id"
-  :default-checked-keys="[1]"
-  :props="defaultProps"
+  :props="{children: 'children',label: 'title'}"
   >
 </el-tree>
 
@@ -31,10 +30,10 @@
 </template>
 
 <script>
-import {successalert} from "../../../utils/alert.js"
+import {lossalert, successalert} from "../../../utils/alert.js"
 import {reqRoleAdd, reqRoleDetail, reqRoleUpdate,reqMenuList} from "../../../utils//http.js"
 export default {
-  props:["info"],
+  props:["info","list"],
    data(){
    return {
      user:{
@@ -42,10 +41,6 @@ export default {
        menus: [],
        status:1
      },
-        defaultProps: {
-          children: 'children',
-          label: 'title'
-        },
         menulist:[]
    }
  },
@@ -57,10 +52,9 @@ export default {
       }
     },
   add(){
-     console.log(this.$refs.tree.getCheckedKeys());
-     this.user.menus=JSON.stringify(this.$refs.tree.getCheckedKeys())
+    this.checkProps().then(res=>{
+      this.user.menus=JSON.stringify(this.$refs.tree.getCheckedKeys())
     reqRoleAdd(this.user).then(res=>{
-          console.log(res)
           if(res.data.code==200){
             successalert(res.data.msg)
             this.cancel();
@@ -68,6 +62,8 @@ export default {
             this.$emit("init")
           } 
     })
+    })
+     
   },
   empty(){
     this.user={
@@ -79,19 +75,45 @@ export default {
   getOne(id){
       reqRoleDetail({id:id}).then(res=>{
         if(res.data.code==200){
+          
+          res.data.list.menus = JSON.parse(res.data.list.menus)
           this.user=res.data.list
+          console.log(this.$refs.tree)
+          // this.menulist = this.user.menus
+          console.log(this.user)
+          this.$refs.tree.setCheckedKeys(this.user.menus)
           this.user.id=id
         }
       })
   },
   update(){
+     this.user.menus=JSON.stringify(this.$refs.tree.getCheckedKeys())
     reqRoleUpdate(this.user).then(res=>{
     if(res.data.code=200){
       successalert(res.data.msg)
       this.cancel()
       this.empty()
       this.$emit("init")
+       if (this.user.id == this.userInfo.roleid) {
+            this.changeUser({});
+            this.$router.push("/login");
+            return;
+          }
     }
+    })
+  },
+  checkProps(){
+    return new Promise((resolve,reject)=>{
+      if(this.user.rolename===""){
+        lossalert("菜单名称不能为空");
+        return;
+      }
+
+      // if(this.user.menus.length === 0){
+      //   lossalert("请选择权限");
+      //   return;
+      // }
+      resolve();
     })
   }
   },

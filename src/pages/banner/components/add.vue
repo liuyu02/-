@@ -23,7 +23,6 @@
           <el-switch v-model="user.status" :active-value="1" :inactive-value="2"></el-switch>
         </el-form-item>
       </el-form>
-       {{user}}
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button type="primary"  @click="add" v-if="info.isadd">添 加</el-button>
@@ -67,8 +66,8 @@ methods:{
       }
     },
      add(){
-        console.log(123);
-    reqBannerAdd(this.user).then(res=>{
+    this.checkProps().then(()=>{
+reqBannerAdd(this.user).then(res=>{
         console.log(res);
         if(res.data.code==200){
             successalert(res.data.list);
@@ -77,6 +76,8 @@ methods:{
            this.$emit("init")
         }
     })
+    })
+    
      },
      cancel(){
          this.info.isshow=false
@@ -101,6 +102,19 @@ methods:{
            this.$emit("init")
        }
     })
+},
+checkProps(){
+  return new Promise((resolve,reject)=>{
+    if(this.user.title===""){
+      lossalert("标题不能为空");
+        return;
+    }
+    if(!this.user.img){
+      lossalert("请上传图片");
+      return;
+    }
+    resolve();
+  })
 }
 },
 

@@ -34,6 +34,7 @@ export default {
        console.log(124);
        reqRolelist().then(res=>{
          if(res.data.code==200){
+           console.log(res)
            this.list=res.data.list
          }
        })

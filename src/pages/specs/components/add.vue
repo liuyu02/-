@@ -6,7 +6,6 @@
         <el-form-item label="规格名称" label-width="80px">
           <el-input v-model="user.specsname" autocomplete="off"></el-input>
         </el-form-item>
-     {{attrsArr}}
          <el-form-item label="规格属性" label-width="80px"
         v-for="(item,index) in attrsArr"
         :key="index"
@@ -21,7 +20,6 @@
           <el-switch v-model="user.status" :active-value="1" :inactive-value="2" ></el-switch>
         </el-form-item>
       </el-form>
-      {{user}}
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel" >取 消</el-button>
         <el-button type="primary" @click="add" >添 加</el-button>
@@ -34,7 +32,7 @@
 <script>
 import{ mapActions,mapGetters} from "vuex"
 import{ reqSpecsAdd , reqSpecsDetail, reqSpecsUpdate} from "../../../utils/http.js"
-import {successalert} from "../../../utils/alert.js"
+import {lossalert, successalert} from "../../../utils/alert.js"
 export default {
     props:["info"],
    data(){
@@ -78,11 +76,12 @@ export default {
                status:1
            },
            this.attrsArr=[
-               {valuse:""}
+               {value:""}
            ]
        },
        add(){
-           this.user.attrs=JSON.stringify(this.attrsArr.map(item=>item.value))
+         this.checkProps().then(()=>{
+      this.user.attrs=JSON.stringify(this.attrsArr.map(item=>item.value))
          reqSpecsAdd(this.user).then(res=>{
              if (res.data.code==200) {
                 this.cancel()
@@ -92,6 +91,8 @@ export default {
                  this.reqTotal()
              }
          })
+         })
+          
        },
        getOne(id){
          reqSpecsDetail({id:id}).then(res=>{
@@ -112,6 +113,19 @@ export default {
               this.empty();
               this.reqList()
            }
+         })
+       },
+       checkProps(){
+         return new Promise((resolve,reject)=>{
+           if(this.user.specsname===""){
+            lossalert("名称不能为空");
+             return;
+           }
+           if(this.attrsArr.some(item=>item.value==="")){
+             lossalert("属性不能为空");
+             return;
+           }
+           resolve()
          })
        }
    },

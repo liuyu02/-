@@ -44,7 +44,7 @@
 
 <script>
 import {reqRoleAdd, reqMenuDetail, reqMenuUpdate, reqMenulist, reqRoleDetail, reqRoleUpdate, reqRolelist, reqManageAdd, reqManageDetail, reqManageUpdate} from "../../../utils/http.js";
-import { successalert } from "../../../utils/alert.js";
+import { lossalert, successalert } from "../../../utils/alert.js";
 export default {
   props: ["info","list"],
   data() {
@@ -71,7 +71,8 @@ export default {
       };
     },
     add() {
-      reqManageAdd(this.user).then(res => {
+      this.checkProps().then(res=>{
+ reqManageAdd(this.user).then(res => {
         if (res.data.code == 200) {
           successalert(res.data.msg);
           this.cancel();
@@ -79,6 +80,8 @@ export default {
           this.$emit("init")
         }
       });
+      })
+     
     },
     getOne(id){
       reqManageDetail({uid:id}).then(res=>{
@@ -97,7 +100,24 @@ export default {
           this.$emit("init");
         }
       })
-    }
+    },
+    checkProps(){
+    return new Promise((resolve,reject)=>{
+      if(this.user.roleid===""){
+        lossalert("请选择角色");
+        return;
+      }
+      if(this.user.username===""){
+        lossalert("用户名不能为空");
+        return;
+      }
+      if(this.user.password===""){
+        lossalert("密码不能为空");
+        return;
+      }
+      resolve();
+    })
+  }
   },
   mounted() {
     reqRolelist().then((res) => {
@@ -106,6 +126,7 @@ export default {
       }
     });
   },
+  
 };
 </script>
 
