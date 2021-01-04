@@ -40,6 +40,7 @@ export default {
  methods:{
      willadd(){
    this.info.isshow=true;
+   this.info.isadd=true;
  },
  init(){
   //  reqManageList({page:1,size:50}).then(res=>{
@@ -52,6 +53,7 @@ export default {
  },
  edit(id){
    this.info.isshow=true
+   this.info.isadd=false
     this.$refs.add.getOne(id)
  },
 //  请求总数

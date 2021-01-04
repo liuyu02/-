@@ -31,10 +31,8 @@ export default {
        this.info.isadd=true
      },
      init(){
-       console.log(124);
        reqRolelist().then(res=>{
          if(res.data.code==200){
-           console.log(res)
            this.list=res.data.list
          }
        })

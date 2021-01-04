@@ -5,7 +5,6 @@
         <el-form-item label="菜单名称" label-width="100px">
           <el-input v-model="user.title" autocomplete="off"></el-input>
         </el-form-item>
-        {{list}}
         <el-form-item label="上级菜单" label-width="100px">
           <el-select v-model="user.pid"  @change="changepid">
             <el-option :value="0" label="顶级菜单"></el-option>
@@ -91,7 +90,6 @@ add(){
    this.checkProps().then(res=>{
      reqMenuAdd(this.user).then(res=>{
      if(res.data.code==200){
-         console.log("成功",res)
          successalert(res.data.msg);
          this.cancel();
          this.empty();
@@ -99,9 +97,6 @@ add(){
      }
    })
    })
-
-   
-
 },
 changepid(){
   if(this.user.pid==0){
@@ -135,14 +130,7 @@ checkProps(){
       return;
     }
 
-    if(this.user.icon ===""){
-      lossalert("图标不能为空");
-      return;
-    }
-    if(this.user.url===""){
-      lossalert("地址不能为空");
-      return;
-    }
+  
     resolve();
   })
 },

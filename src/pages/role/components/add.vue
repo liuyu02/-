@@ -78,9 +78,6 @@ export default {
           
           res.data.list.menus = JSON.parse(res.data.list.menus)
           this.user=res.data.list
-          console.log(this.$refs.tree)
-          // this.menulist = this.user.menus
-          console.log(this.user)
           this.$refs.tree.setCheckedKeys(this.user.menus)
           this.user.id=id
         }
@@ -109,10 +106,7 @@ export default {
         return;
       }
 
-      // if(this.user.menus.length === 0){
-      //   lossalert("请选择权限");
-      //   return;
-      // }
+    
       resolve();
     })
   }
@@ -121,8 +115,6 @@ export default {
  mounted(){
    reqMenuList().then(res=>{
     if (res.data.code==200){
-      console.log("获取成功",res)
-      console.log(res.data.list)
       this.menulist=res.data.list
     }
   })

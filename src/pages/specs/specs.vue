@@ -18,7 +18,8 @@ export default {
  data(){
   return {
      info:{
-      isshow:false
+      isshow:false,
+      isadd:true
    }
   }
  },
@@ -29,14 +30,16 @@ export default {
  },
  methods:{
    ...mapActions({
-     reqList:"cate/list"
+     reqList:"cate/reqList"
    }),
    willadd(){
         this.info.isshow=true
+        this.info.isadd=true
    },
    edit(id){
      this.info.isshow=true;
      this.$refs.add.getOne(id);
+     this.info.isadd=false
    }
  },
  mounted(){}

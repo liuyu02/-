@@ -27,6 +27,7 @@ export default {
   methods:{
   willadd(){
     this.info.isshow=true;
+    this.info.isadd=true
   },
   init(){
     reqBannerList({istree:true}).then(res=>{
@@ -38,6 +39,7 @@ export default {
   },
   edit(id){
     this.info.isshow=true;
+    this.info.isadd=false;
     this.$refs.add.getOne(id)
   },
   },

@@ -1,10 +1,10 @@
 # u_shops
 
 菜单管理
-OK  验证有BUG
+OK  
 
 角色管理
-OK   验证 有BUG
+OK   
 
 
 管理员管理
@@ -12,10 +12,10 @@ OK
 
 
 商品分类
-OK   验证有BUG
+OK   
 
 商品规格
-OK  删除BUG
+OK   
 
 商品管理
 
@@ -28,4 +28,4 @@ OK
 OK
 
 秒杀活动
- 有BUG
+OK

@@ -9,7 +9,7 @@ export let getters={
 export let mutations={
     changeUserInfo(state,obj){ 
         state.userInfo=obj;
-        //同步到本地存储
+  
         if(obj.username){
             sessionStorage.setItem("userInfo",JSON.stringify(obj))
         }else{

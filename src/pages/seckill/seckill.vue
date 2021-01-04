@@ -15,7 +15,8 @@ components:{vList,vAdd},
 data(){
   return {
     info:{
-      isshow:false
+      isshow:false,
+      isadd:true
     }
   }
 },
@@ -29,10 +30,12 @@ methods:{
     reqList:"seckillList"
   }),
   willadd(){
-    this.info.isshow=true
+    this.info.isshow=true;
+    this.info.isadd=true
   },
   edit(id){
     this.info.isshow=true;
+    this.info.isadd=false
     this.$refs.add.getOne(id);
   }
 }  

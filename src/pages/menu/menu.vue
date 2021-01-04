@@ -28,14 +28,12 @@ export default {
   methods:{
     willAdd(){
   this.info.isshow=true;
-  this.info.isadd=true
+ this.info.isadd=true
 },
 
 init(){
   reqMenuList().then(res=>{
     if (res.data.code==200){
-      console.log("获取成功",res)
-      console.log(res.data.list)
       this.list=res.data.list
     }
   })

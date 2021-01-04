@@ -1,7 +1,7 @@
 <template>
   <div class="form">
     
-    <el-dialog title="添加" :visible.sync="info.isshow" @opened="opened" >
+    <el-dialog  @closed="cancel" :title="info.isadd? '添加菜单':'编辑菜单'" :visible.sync="info.isshow" @opened="opened" >
       <el-form :model="user">
         <el-form-item label="一级分类" label-width="100px">
           <el-select v-model="user.first_cateid" @change="changeFirstCateId">
@@ -97,8 +97,8 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add">添 加</el-button>
-        <el-button type="primary"  @click="update">修 改</el-button>
+        <el-button type="primary" @click="add" v-if="info.isadd">添 加</el-button>
+        <el-button type="primary"  @click="update" v-else>修 改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -207,7 +207,10 @@ export default {
 }
    },
      cancel(){
-         this.info.isshow=false
+         this.info.isshow=false;
+         if(!this.info.isadd){
+           this.empty()
+         }
      },
      changeImg(e){
       let file=e.raw;
@@ -223,7 +226,7 @@ export default {
        reqGoodsDetail({id:id}).then(res=>{
              if(res.data.code==200){
                this.user=res.data.list;
-               this.getSecondList();
+               this.getSeconfdList();
                this.imgUrl=this.$pre+this.user.img;
                this.getShowSpecsAttr();
                this.user.specsattr=JSON.parse(this.user.specsattr);

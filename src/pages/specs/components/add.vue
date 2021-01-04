@@ -1,7 +1,7 @@
 <template>
   <div>
       
-      <el-dialog title="编辑菜单"   :visible.sync="info.isshow">
+      <el-dialog @closed="cancel" :title="info.isadd? '添加菜单':'编辑菜单'"   :visible.sync="info.isshow">
       <el-form :model="user">
         <el-form-item label="规格名称" label-width="80px">
           <el-input v-model="user.specsname" autocomplete="off"></el-input>
@@ -22,8 +22,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel" >取 消</el-button>
-        <el-button type="primary" @click="add" >添 加</el-button>
-        <el-button type="primary" @click="update">修 改</el-button>
+        <el-button type="primary" @click="add" v-if="info.isadd" >添 加</el-button>
+        <el-button type="primary" @click="update" v-else>修 改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -53,7 +53,6 @@ export default {
 
        })
    },
-
    methods:{
        ...mapActions({
            reqList:"specs/reqList",
@@ -61,7 +60,9 @@ export default {
        }),
        cancel(){
            this.info.isshow=false;
-           
+           if (!this.info.isadd) {
+              this.empty()
+           }
        },
        addAttr(){
            this.attrsArr.push({value:""})
@@ -84,11 +85,11 @@ export default {
       this.user.attrs=JSON.stringify(this.attrsArr.map(item=>item.value))
          reqSpecsAdd(this.user).then(res=>{
              if (res.data.code==200) {
-                this.cancel()
+                this.cancel();
                  this.empty();
                  successalert(res.data.msg);
-                 this.reqList()
-                 this.reqTotal()
+                 this.reqList();
+                 this.reqTotal();
              }
          })
          })

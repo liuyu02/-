@@ -26,7 +26,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button type="primary"  @click="add" v-if="info.isadd">添 加</el-button>
-        <el-button type="primary" @click="update">修 改</el-button>
+        <el-button type="primary" @click="update" v-else>修 改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -80,7 +80,11 @@ reqBannerAdd(this.user).then(res=>{
     
      },
      cancel(){
-         this.info.isshow=false
+         this.info.isshow=false;
+         if (!this.info.isadd){
+           this.empty()
+           
+         }
      },
      getOne(id){
          reqBannerDetail({id:id}).then(res=>{

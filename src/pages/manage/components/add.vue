@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="info.isadd?'添加管理员':'编辑管理员'" :visible.sync="info.isshow">
+    <el-dialog  @closed="cancel" :title="info.isadd? '添加菜单':'编辑菜单'" :visible.sync="info.isshow">
       <el-form :model="user">
         <el-form-item label="所属角色" label-width="100px">
           <el-select v-model="user.roleid" placeholder="请选择">
@@ -35,8 +35,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add">添加</el-button>
-          <el-button type="primary" @click="update">修改</el-button>
+        <el-button type="primary" @click="add" v-if="info.isadd">添加</el-button>
+          <el-button type="primary" @click="update" v-else>修改</el-button>
       </div>
     </el-dialog>
   </div>
@@ -61,6 +61,9 @@ export default {
   methods: {
     cancel() {
       this.info.isshow = false;
+      if(!this.info.isadd){
+        this.empty()
+      }
     },
     empty() {
       this.user = {

@@ -67,7 +67,7 @@ methods:{
         if(res.data.code==200){
           successalert(res.data.msg);
           this.reqList();
-          this.reqTotal()
+          this.reqTotal();
         }
       })
       })

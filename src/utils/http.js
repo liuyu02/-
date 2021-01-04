@@ -1,7 +1,7 @@
 import axios from "axios"
 import qs from "qs"
 import Vue from "vue"
-import { erroralert, lossalert } from "./alert"
+import { successalert, lossalert } from "./alert"
 import store from "../store"
 import router from "../router"
 
@@ -13,17 +13,8 @@ Vue.prototype.$pre = "http://localhost:3000"
 // let baseUrl=""
 // Vue.prototype.$pre=""
 
-axios.interceptors.response.use(res => {
-    console.group("本次请求地址是：" + res.config.url)
-    console.log(res)
-    console.groupEnd()
-    if (res.data.code!== 200) {
-        lossalert(res.data.msg)
-    }
-    return res
-})
 
-// 请求头
+//  请求拦截: 请求头
 axios.interceptors.request.use(config=>{
     if(config.url!==baseUrl+"/api/userlogin"){
         config.headers.authorization=store.state.userInfo.token
@@ -31,35 +22,22 @@ axios.interceptors.request.use(config=>{
     return config
 })
 
-axios.interceptors.response.use(res => {
-
-    // 登录失败
-    if (res.data.code !== 200) {
-        lossalert(res.data.msg)
-    }
-    if (!res.data.list) {
-        res.data.list = []
-    }
-    if(res.data.msg==="登录已过期或访问权限受限"){
-        //清除用户登录的信息 userInfo
-        store.dispatch("changeUser",{})
-        router.push("/login")
-    }
-    return res
-})
-
-// 登录到期
+// 响应拦截
 axios.interceptors.response.use(res=>{
-    if(!res.data.code!==200){
+    if(res.data.code!==200){
         lossalert(res.data.msg)
     }
     if(!res.data.list){
         res.data.list=[]
     }
+    // 掉线处理
     if(res.data.msg==="登录已过期或访问权限受限"){
         store.dispatch("changeUser",{})
         router.push("/login")
     }
+    console.group("本次请求地址是：" + res.config.url)
+    console.log(res)
+    console.groupEnd()
     return res
 })
 
